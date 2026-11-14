@@ -199,10 +199,25 @@ pushing — do not assume your push turned checks green or that a thread is reso
 green/resolved without a fresh observation you made *this cycle*: read the actual check output and
 thread state, don't extrapolate from the fact that you pushed.
 
+**UI evidence gate.** If the repo has an `## ADLC preview` section and the PR diff touches its UI
+paths, the PR needs an `## UI evidence` comment created after the last commit that touched those
+paths:
+
+```bash
+git log -1 --format=%cI origin/{branch} -- <ui paths>          # last UI change
+gh pr view {n} --json comments \
+  --jq '[.comments[] | select(.body | startswith("## UI evidence")) | .createdAt] | max'
+```
+
+Missing or older than the last UI change (for example, you pushed a UI fix this run) → recapture
+with `adlc:capturing-ui-evidence` and attach. If the capture fails, escalate; never report
+ready-to-merge without current evidence.
+
 ### Step 5: Decide — continue, exit, or escalate
 
 - **Mergeable** (`CI=green` AND `THREADS_STATE=KNOWN` with **all threads resolved — human and bot**
-  AND `DECISION=APPROVED`, or `NONE_REQUIRED` with no changes requested) →
+  AND `DECISION=APPROVED`, or `NONE_REQUIRED` with no changes requested, AND the UI evidence gate
+  passes) →
   **stop the loop and notify**:
   > ✅ PR #{n} is ready to merge — all checks green, approved, {k} threads resolved (incl. bot review). Merge when ready (`gh pr merge {n} --squash`).
 - **Escalation needed** (ambiguous/architectural feedback, disagreement, attempt cap hit,
@@ -307,7 +322,8 @@ assertion from it.
 Stop and report the moment any of these is true — do not keep cycling:
 
 1. **Mergeable** — CI green (`watch-pr-checks.sh` exited `0`, or a fresh Step 1 poll observed
-   `CI=green`), every thread resolved (human and bot), approved where approval is required.
+   `CI=green`), every thread resolved (human and bot), approved where approval is required, and
+   current UI evidence attached when the diff touches UI paths.
 2. **Escalation needed** — ambiguous or architectural feedback, a disagreement, the per-check
    attempt cap (3) hit, a merge conflict or required rebase, or CI failing on code you don't own.
 3. **PR merged or closed** by someone else.
@@ -325,6 +341,7 @@ PR: #<n> — <title>
 OUTCOME: ready-to-merge | escalation-needed | merged | closed | budget-exhausted
 CI: <observed state, from this cycle>
 THREADS: <resolved>/<total> resolved; <k> open and why — `unknown` when a poll could not read them
+UI EVIDENCE: current | recaptured | not needed | missing (why)
 CYCLES: <n>   COMMITS PUSHED: <n>
 NEEDS A HUMAN: <the specific decision, or "nothing">
 ```

@@ -130,6 +130,22 @@ Add an `## ADLC tickets` section to the repo's CLAUDE.md or AGENTS.md:
 Property names default to the table above; override any with a `Property names:` line. The full contract is in
 [`skills/tracking-tickets/SKILL.md`](skills/tracking-tickets/SKILL.md).
 
+### UI Evidence on PRs
+
+Add an `## ADLC preview` section so PRs that touch the UI carry screenshots and a video, and are
+not reported ready to merge without them (`skills/capturing-ui-evidence`):
+
+```markdown
+## ADLC preview
+
+- Command: `npm run dev`          (start the app in mock mode, no real credentials)
+- URL: http://localhost:3000
+- Ready URL: http://localhost:8000/health   (optional: a backend that must also answer)
+- UI paths: `frontend/**`
+```
+
+Needs `node`/`npm` (Playwright installs itself on first use) and gh 2.99+ for `--attach`.
+
 For the full set of configuration options (including hooks and per-repo overrides in `.claude/adlc.local.md`), see [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) and [`docs/HOOKS.md`](docs/HOOKS.md).
 
 ### Estimated Claude Spend in PRs

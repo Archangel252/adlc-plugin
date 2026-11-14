@@ -43,6 +43,12 @@ seams:
       the PR scripts under skills/babysitting-prs/scripts/ confirm the repo with `gh repo view` and
       exit 4 rather than branching per host, so a port replaces them wholesale (each has a stub-CLI
       test suite in the sibling tests/ directory that must be ported with it).
+  - id: ui-preview
+    axis: company
+    kind: injection
+    locations: ["skills/capturing-ui-evidence/**", "skills/creating-pull-requests/**", "skills/babysitting-prs/**", "skills/execution-orchestration/**"]
+    detect: ["ADLC preview", "capturing-ui-evidence"]
+    note: Repo's `## ADLC preview` section (preview command, URL, UI paths) drives UI evidence on PRs and the ready-to-merge gate
   - id: task-runner
     axis: company
     kind: substitution

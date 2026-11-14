@@ -257,6 +257,15 @@ if [[ ${#changes[fixes]} -gt 0 ]]; then
 fi
 ```
 
+### Step 7.5: Attach UI Evidence
+
+If the repo has an `## ADLC preview` section and `git diff --name-only $DEFAULT_BRANCH...HEAD` touches
+any of its UI paths, **REQUIRED:** run `adlc:capturing-ui-evidence` and attach screenshots (and a
+video for interactions) to the PR as an `## UI evidence` comment. Look at every capture before
+attaching it. If the capture fails, say so in the report — the PR stays open but is not ready to merge.
+
+No preview section → skip, and say "no ADLC preview configured" in the report.
+
 ### Step 8: Report Success
 
 ```markdown
@@ -270,6 +279,7 @@ fi
 - {N} files changed
 - {N} insertions, {N} deletions
 - {N} commits included
+- UI evidence: {attached: N files | not needed | no ADLC preview configured | capture failed: why}
 
 **Next steps:**
 1. Review the PR description and edit if needed

@@ -435,6 +435,11 @@ this matches the `cwd` strings in the transcripts even after phase worktrees wer
 [creating-pull-requests/resources/spend-estimate.md](../creating-pull-requests/resources/spend-estimate.md)
 for the exact command. Append to the feature PR body when non-empty.
 
+**UI evidence:** if the feature diff touches the repo's `## ADLC preview` UI paths, run
+`adlc:capturing-ui-evidence` from the feature worktree and attach it to the feature PR. Phase PRs
+merge without a human look, so this is the only place the reviewer sees the UI. Cover each visible
+acceptance criterion in the Specification.
+
 **PM update:** Set parent → In Review, comment PR link.
 
 **Drive to done:** Spawn a fresh subagent on the feature PR using the canonical brief in
