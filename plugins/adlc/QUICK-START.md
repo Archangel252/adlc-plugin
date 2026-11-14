@@ -47,7 +47,7 @@ AGENTS.md:
 ## ADLC tickets
 
 - Data source: collection://<your data source id>
-- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged to dev,
+- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged,
   refining=Refining
 ```
 
