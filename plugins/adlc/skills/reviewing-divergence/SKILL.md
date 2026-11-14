@@ -50,7 +50,7 @@ Divergence Review Progress:
 
 ### Step 1: Load Artifacts
 
-- Parent issue: `mcp__linear-server__get_issue(id)` (or the JIRA equivalent) — extract
+- Parent issue: **get ticket** (`Skill(adlc:tracking-tickets)`) — extract
   `## Specification` and, in `breakdown` mode, `## Technical Plan`.
 - `breakdown` mode: fetch **every** sub-issue in full. A breakdown you have only partly read
   cannot be audited — titles hide nothing, bodies do.

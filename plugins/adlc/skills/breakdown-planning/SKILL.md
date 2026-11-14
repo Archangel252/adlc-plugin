@@ -36,13 +36,13 @@ Break down Specification + Technical Plan into executable sub-issues using **ver
 
 | Phase | Key Activities | Tool Usage | Output |
 |-------|---------------|------------|--------|
-| **1. Load Context** | Retrieve Specification + Technical Plan | Linear/JIRA MCP | Full context loaded |
+| **1. Load Context** | Retrieve Specification + Technical Plan | tracking-tickets: get ticket | Full context loaded |
 | **2. Extract Phases** | Identify vertical slices from Technical Plan | — | Vertical slice phases defined |
 | **3. Create Tasks** | Define atomic todos within each phase | TodoWrite | Tasks with TDD checklists |
-| **4. Create Sub-Issues** | Write phase subtickets to PM system | Linear/JIRA MCP | Sub-issues with full context |
-| **5. Map Dependencies** | Link blocking relationships between phases | Linear/JIRA MCP | Dependency graph complete |
-| **5.5 Verify Quality** | Re-read sub-issues and validate sections | Linear/JIRA MCP | All sub-issues validated |
-| **5.6 Coverage Review** | Confirm phases together cover Plan + Spec | Linear/JIRA MCP | No signal loss from plan/spec |
+| **4. Create Sub-Issues** | Write phase subtickets to PM system | tracking-tickets: create ticket | Sub-issues with full context |
+| **5. Map Dependencies** | Link blocking relationships between phases | tracking-tickets: link dependency | Dependency graph complete |
+| **5.5 Verify Quality** | Re-read sub-issues and validate sections | tracking-tickets: get ticket | All sub-issues validated |
+| **5.6 Coverage Review** | Confirm phases together cover Plan + Spec | tracking-tickets: get ticket | No signal loss from plan/spec |
 
 ## The Process
 
@@ -63,8 +63,7 @@ Breakdown Progress:
 
 **Retrieve parent issue:**
 
-- Linear: `mcp__linear-server__get_issue` with issue ID
-- JIRA: (equivalent JIRA tool) with issue ID
+- **get ticket** (see `Skill(adlc:tracking-tickets)`)
 - Extract: Title, Specification section, Technical Plan section
 
 **Verify required sections:**
@@ -294,9 +293,12 @@ Tasks reuse the `### Task N:` format from the Phase 3 example (Layers, Files, Un
 Reference). Each sub-issue must be self-contained — the implementing agent should never need
 to read the parent issue.
 
-**After each sub-issue created:** record the issue ID and map dependencies via the PM
-relationship system (update the blocking issue with a link to the blocked issue, and vice
-versa).
+Create each one with **create ticket** (tracking-tickets): `parent` = the feature ticket, `type` from
+`creating-tickets`, status `todo`.
+
+**After each sub-issue created:** record its ticket ID, then **link dependency** for each phase it depends on
+(set the later phase's `Blocked by` to the earlier one; Notion fills `Blocks` itself). When all phases exist,
+**set status → todo** on the parent.
 
 ### Phase 5: Document Patterns
 

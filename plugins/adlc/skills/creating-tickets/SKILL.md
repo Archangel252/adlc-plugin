@@ -13,7 +13,7 @@ Standardized process for creating project management tickets with proper classif
 
 ## Ticket Type Classification
 
-**CRITICAL: All tickets MUST have exactly ONE of these labels:**
+**CRITICAL: Every ticket MUST have exactly ONE of these Types:**
 
 ### Feature
 
@@ -27,7 +27,7 @@ Standardized process for creating project management tickets with proper classif
 - Modified business rule
 - New integration
 
-**Label:** `feature` or `Feature`
+**Type:** `feature`
 
 **Execution workflow:** Uses `executing-tasks` skill, feature pathway (TDD required)
 
@@ -45,7 +45,7 @@ Standardized process for creating project management tickets with proper classif
 - Code cleanup and organization
 - Configuration changes
 
-**Label:** `chore` or `Chore`
+**Type:** `chore`
 
 **Execution workflow:** Uses `executing-tasks` skill, chore pathway (no TDD requirement, but full test suite must pass and changes get a lightweight code review)
 
@@ -61,7 +61,7 @@ Standardized process for creating project management tickets with proper classif
 - Performance regression
 - Incorrect validation logic
 
-**Label:** `bug` or `Bug`
+**Type:** `bug`
 
 **Execution workflow:** Uses `executing-tasks` skill, bug pathway (TDD required: reproduce with test first)
 
@@ -227,32 +227,14 @@ Follow systematic-debugging and test-driven-development skills:
 
 ## Creating Tickets in PM System
 
-**Use PM MCP tools (Linear, JIRA, or other):**
+Use **create ticket** from `Skill(adlc:tracking-tickets)`:
 
-```python
-# Example with Linear
-ticket = mcp__linear-server__create_issue({
-    'title': '[Clear, concise title]',
-    'description': '[Use appropriate template above]',
-    'team': '[Team name or ID]',
-    'parentId': '[Parent ticket ID for sub-tickets]',
-    'labels': ['feature' or 'chore' or 'bug'],  # REQUIRED
-    'state': 'Todo',
-    'priority': '[Only if explicitly specified]'
-})
-
-# Example with JIRA
-ticket = mcp__jira__create_issue({
-    'summary': '[Clear, concise title]',
-    'description': '[Use appropriate template above]',
-    'project': '[Project key]',
-    'parent': '[Parent ticket key for sub-tasks]',
-    'issuetype': '[Task/Story/Bug]',
-    'labels': ['feature' or 'chore' or 'bug'],  # REQUIRED
-})
-
-# Adapt to your PM system's MCP tools
-```
+- title: clear and concise
+- body: the template above for the ticket's type
+- **Type: `feature`, `bug` or `chore` (REQUIRED)**
+- parent: the feature ticket, for a phase sub-ticket
+- status: `todo`
+- Priority: only if the user specified one
 
 ## Validation Rules
 
@@ -261,18 +243,16 @@ ticket = mcp__jira__create_issue({
 1. **Classification check:**
 
    ```python
-   if not any(label in ['feature', 'chore', 'bug'] for label in labels):
-       ERROR: "Ticket must have feature, chore, or bug label"
+   if ticket_type not in ['feature', 'chore', 'bug']:
+       ERROR: "Ticket must have Type feature, chore, or bug"
        STOP
    ```
 
 2. **Single classification:**
 
    ```python
-   type_labels = [l for l in labels if l in ['feature', 'chore', 'bug']]
-   if len(type_labels) > 1:
-       ERROR: "Ticket can only have ONE type label"
-       STOP
+   # Type is a single select in Notion, so a ticket can only ever have one.
+   # Don't encode a second type in the title or body either.
    ```
 
 3. **Template usage:**

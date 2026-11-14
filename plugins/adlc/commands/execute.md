@@ -113,8 +113,8 @@ graph TB
 ### Step 1: Detect Issue Type
 
 ```python
-issue = mcp__linear-server__get_issue(id=issue_id)
-sub_issues = mcp__linear-server__list_issues(parentId=issue.id)
+issue = get_ticket(issue_id)            # tracking-tickets
+sub_issues = list_sub_tickets(issue)    # tracking-tickets
 
 if issue.parent:
     # This is a phase (sub-issue) - execute directly via Tier 2
@@ -161,7 +161,7 @@ Always ensure issue status is updated during the implementation process:
 
 ## Integration
 
-**Requires:** PM system (Linear/JIRA) MCP, GitHub CLI authenticated.
+**Requires:** Notion ticket database (`Skill(adlc:tracking-tickets)`), GitHub CLI authenticated.
 
 **Feature execution also requires:** Parent issue with Specification + Technical Plan + phases, `execution-orchestration` skill.
 

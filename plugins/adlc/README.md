@@ -3,7 +3,7 @@
 **Version:** 1.0.0
 **Plugin Type:** Claude Code Plugin for Development Workflow Automation
 
-The ADLC (Agentic Development Lifecycle) plugin takes work from a rough idea to a merged PR through a consistent, spec-driven, test-driven pipeline, deeply integrated with Linear and JIRA.
+The ADLC (Agentic Development Lifecycle) plugin takes work from a rough idea to a merged PR through a consistent, spec-driven, test-driven pipeline, with Notion as the ticket system.
 
 ```
 /refine → /plan → /breakdown → /execute → /pr → /address-feedback
@@ -86,40 +86,26 @@ Run `/foundations:setup` (from the [Foundations plugin](../foundations/README.md
 
 ## Integration Requirements
 
-### Required MCP Integration
+### Required: Notion
 
-**IMPORTANT:** The ADLC plugin does NOT install MCP servers. You must install and configure them separately in your Claude Code settings.
+ADLC keeps tickets in a Notion database. Connect Notion to Claude Code (the claude.ai Notion connector, or the
+Notion MCP server), then give the repo a ticket database (see Configuration below). The tools ADLC uses:
+`notion-fetch`, `notion-query-data-sources`, `notion-create-pages`, `notion-update-page`, `notion-create-comment`
+(whatever prefix your connection gives them).
 
-**Linear:**
+The database needs these properties (names configurable):
 
-Linear provides an official, centrally-hosted MCP server. Install via Claude Code CLI:
+| Property | Type |
+|---|---|
+| `Name` | title |
+| `Ticket ID` | ID (auto-increment number) |
+| `Status` | status, with values for refining / todo / in progress / in review / blocked / done |
+| `Type` | select: `feature`, `bug`, `chore` |
+| `Parent` ↔ `Sub-tickets` | two-way relation to the same database |
+| `Blocked by` ↔ `Blocks` | two-way relation to the same database |
 
-```bash
-# Add Linear MCP server
-claude mcp add --transport sse linear-server https://mcp.linear.app/sse
-
-# Authenticate when prompted
-# Use the /mcp command to complete authentication
-```
-
-- Tools needed: `mcp__linear-server__*`
-- Verify: Run `/foundations:setup` to check if MCP server is available
-
-**OR**
-
-**JIRA:**
-
-- **User must install:** JIRA MCP server (check MCP marketplace)
-- Tools needed: JIRA MCP tools
-- Configuration: Add JIRA credentials to Claude Code MCP settings
-- Verify: Run `/foundations:setup` to check if MCP server is available
-
-**Installation Steps:**
-
-1. Install the Linear or JIRA MCP server per their documentation
-2. Add configuration to Claude Code settings (`~/.claude/settings.json`)
-3. Restart Claude Code
-4. Verify with `/foundations:setup` or test MCP tools availability
+Optional: `Acceptance Criteria` (text), `Priority` (select), `PR URL` (url), `Branch` (text), `CI Status`
+(select), `Blocked Reason` (text).
 
 ### Optional But Recommended
 
@@ -129,30 +115,20 @@ claude mcp add --transport sse linear-server https://mcp.linear.app/sse
 
 ## Configuration
 
-### Project Management Configuration
+### Ticket Database Configuration
 
-Add a `## Project Management` section to your CLAUDE.md (created automatically by `/foundations:setup`):
+Add an `## ADLC tickets` section to the repo's CLAUDE.md or AGENTS.md:
 
 ```markdown
-## Project Management
+## ADLC tickets
 
-**Tool:** Linear
-**Team:** CORE
-**Project:** core-platform
-**Epic:** Onboarding Improvements (CORE-100)
+- Data source: collection://<your data source id>   (<database name>)
+- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged to dev,
+  refining=Refining
 ```
 
-This tells ADLC which Linear team/project to create issues in. The same section is auto-discovered by the [Conductor plugin](../conductor/README.md) as a zero-config fallback.
-
-**How PM config flows across plugins:**
-
-| Plugin | Role |
-|--------|------|
-| **Foundations** | `/foundations:setup` writes `## Project Management` to CLAUDE.md |
-| **ADLC** | Reads it to route issues to the correct Linear team (via MCP) |
-| **Conductor** | Auto-discovers it; also supports explicit `~/.adlc-conductor/config.yml` and `.claude/conductor.local.md` |
-
-**Authentication:** ADLC uses the Linear MCP server (OAuth via `claude mcp add`). Conductor uses `LINEAR_API_KEY` env var for its Python-based board polling.
+Property names default to the table above; override any with a `Property names:` line. The full contract is in
+[`skills/tracking-tickets/SKILL.md`](skills/tracking-tickets/SKILL.md).
 
 For the full set of configuration options (including hooks and per-repo overrides in `.claude/adlc.local.md`), see [`docs/CONFIGURATION.md`](docs/CONFIGURATION.md) and [`docs/HOOKS.md`](docs/HOOKS.md).
 
@@ -193,22 +169,21 @@ rolls up its phases without double-counting.
 For parallel execution of multiple features, use the [Conductor plugin](../conductor/README.md):
 
 ```bash
-# Start the conductor (monitors Linear, routes issues, manages executors)
 conductor start
 ```
 
-Conductor polls your Linear board, routes bugs/chores/features to executor panes, notifies you when PRs are ready, and rebases in-flight branches. It uses the same ADLC commands (`/adlc:execute`, `/adlc:bug-fix`, `/adlc:chore`) internally. See the [Conductor README](../conductor/README.md) and [`docs/PARALLEL-ORCHESTRATION.md`](docs/PARALLEL-ORCHESTRATION.md).
+> **Not ported:** Conductor is a separate plugin that still reads a **Linear** board. It doesn't work with the
+> Notion ticket database yet; use the ADLC commands directly.
+
+Conductor polls its board, routes bugs/chores/features to executor panes, notifies you when PRs are ready, and rebases in-flight branches. It uses the same ADLC commands (`/adlc:execute`, `/adlc:bug-fix`, `/adlc:chore`) internally. See the [Conductor README](../conductor/README.md) and [`docs/PARALLEL-ORCHESTRATION.md`](docs/PARALLEL-ORCHESTRATION.md).
 
 ## Troubleshooting
 
-### "No project management MCP configured"
+### "No ticket database configured"
 
-MCP servers must be installed separately by the user:
-
-1. Install Linear MCP: `claude mcp add --transport sse linear-server https://mcp.linear.app/sse`
-2. Add configuration to `~/.claude/settings.json` (see Linear MCP docs)
-3. Restart Claude Code
-4. Verify tools are available with `/foundations:setup`
+1. Connect Notion to Claude Code (claude.ai connector or the Notion MCP server); check with `/mcp`.
+2. Add the `## ADLC tickets` section to the repo's CLAUDE.md or AGENTS.md (see Configuration).
+3. Check the database has the required properties (see "Required: Notion").
 
 The ADLC plugin does NOT install MCP servers automatically.
 
@@ -226,7 +201,7 @@ The issue needs breakdown first: `/adlc:breakdown <issue-id>`
 
 ### "Circular dependency detected"
 
-Review sub-issue dependencies in Linear. One task is blocking another that blocks it back. Fix the dependency chain and re-run `/execute`.
+Review the phase tickets' `Blocked by` links in Notion. One task is blocking another that blocks it back. Fix the dependency chain and re-run `/execute`.
 
 ### "Working directory has uncommitted changes"
 
@@ -258,7 +233,7 @@ For architecture, design decisions, anti-patterns, and code-quality standards, s
 
 - `/refine`, `/breakdown`, `/execute` commands
 - `refining-issues`, `breakdown-planning` skills
-- Linear/JIRA deep integration
+- Notion ticket integration
 - Subagent-driven development pattern
 - TDD enforcement
 - Automatic code review

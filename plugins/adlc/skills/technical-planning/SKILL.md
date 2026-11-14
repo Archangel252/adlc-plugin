@@ -24,7 +24,7 @@ Transform refined specifications (WHAT to build) into comprehensive technical im
 
 | Phase | Key Activities | Tool Usage | Output |
 |-------|---------------|------------|--------|
-| **1. Load Specification** | Retrieve refined issue | Linear/JIRA MCP tools | Specification loaded |
+| **1. Load Specification** | Retrieve refined issue | tracking-tickets: get ticket | Specification loaded |
 | **2. Analyze Codebase** | Find patterns, similar code | Grep, Read | Existing patterns identified |
 | **3. Research Options** | Investigate technologies | Web search, documentation | Technology options evaluated |
 | **4. Design Architecture** | High-level component design | — | Architecture documented |
@@ -32,7 +32,7 @@ Transform refined specifications (WHAT to build) into comprehensive technical im
 | **6. Plan Testing** | Strategy per test level | — | Testing approach defined |
 | **7. Implementation Approach** | Describe high-level approach and key dependencies | — | Approach documented |
 | **8. Document Patterns** | Reference existing code | — | Pattern references |
-| **9. Write to Issue** | Append Technical Plan | Linear/JIRA MCP update | Issue ready for breakdown |
+| **9. Write to Issue** | Append Technical Plan | tracking-tickets: write section | Issue ready for breakdown |
 | **10. Review Signal Loss** | Confirm plan covers the spec | — | No requirement dropped WHAT→HOW |
 
 ## The Process
@@ -57,11 +57,9 @@ Technical Planning Progress:
 
 **Verify issue has Specification section:**
 
+**get ticket** (see `Skill(adlc:tracking-tickets)`), then:
+
 ```bash
-# Linear:
-issue = mcp__linear-server__get_issue(id=issue_id)
-# OR JIRA:
-issue = mcp__jira__get_issue(issue_key=issue_id)
 
 if "## Specification" not in issue.description:
     ERROR: Issue missing Specification section
@@ -388,28 +386,9 @@ Example:
 
 **Update the issue:**
 
-```bash
-# Append concise Technical Plan to existing Specification
-current_description = issue.description
-technical_plan = format_concise_technical_plan()
-new_description = current_description + "\n\n---\n\n" + technical_plan
-
-# Linear:
-mcp__linear-server__update_issue(
-    id=issue_id,
-    description=new_description,
-    labels=['planned', 'refined'],
-    state='Todo'
-)
-
-# OR JIRA:
-mcp__jira__update_issue(
-    issue_key=issue_id,
-    description=new_description,
-    labels=['planned', 'refined'],
-    status='To Do'
-)
-```
+**write section** `## Technical Plan` on the ticket (tracking-tickets), after the Specification. Write only
+that section; leave the Specification and anything else on the page as it is. The ticket's status stays
+`refining` until breakdown is done.
 
 **Confirm with user:**
 
@@ -486,7 +465,7 @@ If you find a gap, the plan lost signal — update the plan (and the issue) befo
 - **Any suggested ordering is vertical** - sketch slices by demoable behavior (each verified end-to-end), never a layer-by-layer sequence — a horizontal sketch here biases `/breakdown` toward a wrong breakdown
 - **Review for signal loss** - before offering breakdown, confirm the plan covers every spec requirement (Phase 10); nothing dropped WHAT→HOW
 - **Approach not breakdown** - Describe components and dependencies, leave detailed vertical phasing to `/breakdown`
-- **All in PM system** - Technical Plan lives in Linear/JIRA issue, not separate files
+- **All in PM system** - Technical Plan lives in the Notion ticket, not separate files
 
 ## Additional Resources
 

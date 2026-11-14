@@ -1,6 +1,6 @@
 ---
 name: adlc-quick
-description: Quick task execution with minimal overhead - creates Linear issue, brief clarification, then immediate execution
+description: Quick task execution with minimal overhead - creates a Notion ticket, brief clarification, then immediate execution
 ---
 
 # Quick - Lightweight Task Execution
@@ -36,7 +36,7 @@ after that delegates to existing skills (so there's no duplicated logic here).
 1. **Detect type** from the description — bug signals (`fix`/`bug`/`error`/`broken`/`crash`), chore signals (`update`/`upgrade`/`refactor`/`cleanup`/`deps`/`config`), else feature.
 2. **Scope check** — if it smells large (`refactor`/`redesign`/`rewrite`/`migrate`/`auth`/`api`/`database`), warn that it may exceed the fast lane and suggest the full pipeline (`/adlc:refine → /plan → /breakdown → /execute`); ask whether to continue anyway.
 3. **Brief clarification** — 1–2 targeted questions only if needed (bug: expected vs actual + affected file; chore: target/version; feature: where it lives). Skip for obvious tasks.
-4. **Create the tracking issue** → `Skill(adlc:creating-tickets)` with the detected label.
+4. **Create the tracking issue** → `Skill(adlc:creating-tickets)` with the detected Type.
 5. **Execute one task** → `Skill(adlc:executing-tasks)` (pathway = label) on a `quick/<id>-<slug>` branch — the same Tier-3 cycle (TDD/verify + per-task review + verification gate) as any task.
 6. **Open the PR** → `Skill(adlc:creating-pull-requests)`, which hands off to `babysitting-prs` to drive it to done.
 

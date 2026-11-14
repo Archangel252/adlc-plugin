@@ -1,6 +1,6 @@
 ---
 name: adlc-breakdown
-description: Break down refined and planned issues into implementation sub-issues with dependencies in Linear/JIRA
+description: Break down refined and planned issues into implementation sub-issues with dependencies in Notion
 ---
 
 # Breakdown - Implementation Task Creation Command
@@ -20,7 +20,7 @@ This command uses the `breakdown-planning` skill to:
 1. Load issue and verify Specification + Technical Plan exist
 2. Break Technical Plan phases into independent, implementable tasks
 3. Each task is a complete feature/behavior (TDD: tests + implementation together)
-4. Create sub-issues in Linear/JIRA with full context
+4. Create phase sub-tickets in Notion with full context
 5. Map dependencies between tasks
 6. Review the breakdown from a **fresh context** (dispatched subagent), then present the human gate before execution
 
@@ -47,12 +47,7 @@ This command uses the `breakdown-planning` skill to:
 
 ```bash
 # Load issue
-if mcp__linear-server available:
-  issue = mcp__linear-server__get_issue(id)
-elif jira available:
-  issue = jira_get_issue(id)
-else:
-  ERROR: No PM system configured
+issue = get_ticket(id)   # tracking-tickets; no ticket database configured → ERROR
 
 # Verify sections
 if "## Specification" not in issue.description:
@@ -131,8 +126,10 @@ D1  Phase 3 adds a bulk-export queue that no acceptance criterion asks for
 ### No PM System
 
 ```markdown
-ERROR: No project management system configured
-Set up Linear or JIRA MCP server first.
+ERROR: No ticket database configured
+
+Add an `## ADLC tickets` section to CLAUDE.md or AGENTS.md naming the Notion data source
+(see `Skill(adlc:tracking-tickets)`), and make sure the Notion connector is connected.
 ```
 
 ### Missing Sections
@@ -232,7 +229,7 @@ ERROR: Run `/adlc:plan FEAT-45` first to create technical plan
 
 **Requires:**
 
-- Linear/JIRA MCP configured
+- Notion connected and an `## ADLC tickets` section in CLAUDE.md/AGENTS.md
 - Issue with Specification + Technical Plan
 - `breakdown-planning` and `reviewing-divergence` skills
 

@@ -38,25 +38,20 @@ mkdir -p ~/.claude/plugins
 ln -s "$(pwd)/plugins/adlc" ~/.claude/plugins/adlc
 ```
 
-### 2. Configure Linear or JIRA MCP Server
+### 2. Connect Notion and point the repo at a ticket database
 
-**IMPORTANT:** ADLC requires a project management MCP server. Choose one:
+Connect Notion to Claude Code (claude.ai connector or the Notion MCP server), then add to the repo's CLAUDE.md or
+AGENTS.md:
 
-#### Linear Setup (Official MCP Server)
+```markdown
+## ADLC tickets
 
-Linear provides an official, centrally-hosted MCP server:
-
-```bash
-# Add Linear MCP server via CLI
-claude mcp add --transport sse linear-server https://mcp.linear.app/sse
-
-# Authenticate in Claude Code
-# Use the /mcp command to complete authentication
+- Data source: collection://<your data source id>
+- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged to dev,
+  refining=Refining
 ```
 
-#### JIRA Setup
-
-Check your organization's internal documentation for JIRA MCP server setup.
+The database's required properties are listed in the README ("Required: Notion").
 
 ### 3. Set Up Recommended Tools
 
@@ -263,7 +258,7 @@ Phase 3: React notification UI (NOTIF-48)
   ✓ Phase PR #14 squash-merged
 
 ✓ All 3 phases complete
-✓ Linear issues updated to "Done"
+✓ Notion tickets updated to "done"
 
 Feature PR? > yes
 
@@ -339,7 +334,7 @@ ls ~/.claude/plugins/adlc
 **"No project management MCP configured"**
 
 - MCP servers must be configured separately (see Prerequisites)
-- Run `claude mcp add --transport sse linear-server https://mcp.linear.app/sse`, then restart Claude Code
+- Connect Notion (claude.ai connector or the Notion MCP server) and add the `## ADLC tickets` section
 - If authentication fails, use the `/mcp` command to re-authenticate
 
 ### Workflow Issues

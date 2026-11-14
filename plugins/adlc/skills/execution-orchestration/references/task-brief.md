@@ -7,7 +7,7 @@ full Specification + Technical Plan into every dispatch prompt.
 - **Smaller prompts** — everything pasted into a dispatch prompt stays resident in that agent's
   context for its whole run. A pointer + a file read is far cheaper than re-pasting the spec and
   plan for every task.
-- **No MCP dependency in the subagent** — the orchestrator (Tier 1/2 lead) has PM (Linear/JIRA)
+- **No MCP dependency in the subagent** — the orchestrator (Tier 1/2 lead) has Notion ticket
   access and fetches the spec/plan once; the task agent only needs to read a local file.
   Subagents can lose MCP access, so they must not need it to get their context.
 

@@ -70,18 +70,11 @@ def handle_phase_failure(phase_id, parent_id, error):
         execute_phase(phase_id)
     else:
         # Notify on parent ticket
-        mcp__linear-server__create_comment(
-            issueId=parent_id,
-            body=f"""## Execution Blocked
-
-**Phase:** {phase_id}
-**Reason:** {error}
-
-**Action needed:** Investigate and run `/adlc:execute {parent_id}` to retry.
-
----
-*ADLC Executor*"""
-        )
+        # tracking-tickets: set status → blocked on the phase, then comment on the parent
+        set_status(phase_id, "blocked")
+        comment(parent_id,
+            f"**Execution blocked** on phase {phase_id}: {error}. "
+            f"Investigate, then run `/adlc:execute {parent_id}` to retry.")
 ```
 
 ## Failure Modes

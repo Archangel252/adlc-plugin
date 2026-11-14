@@ -147,7 +147,7 @@ Additional notes and context for this repository.
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
 | `notifications.enabled` | bool | true | Enable notifications |
-| `notifications.channels.linear` | bool | true | Post to Linear comments |
+| `notifications.channels.notion` | bool | true | Post to Notion ticket comments |
 | `notifications.channels.slack` | bool | false | Post to Slack |
 | `notifications.channels.github` | bool | true | Post to GitHub PRs |
 

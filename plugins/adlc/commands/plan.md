@@ -29,7 +29,7 @@ This command uses the `technical-planning` skill to:
 
 ```bash
 # Load issue
-issue = mcp__linear-server__get_issue(id)
+issue = get_ticket(id)   # tracking-tickets
 
 # Verify Specification exists
 if "## Specification" not in issue.description:
@@ -110,8 +110,10 @@ D1  A caching layer no acceptance criterion asks for
 ### No PM System
 
 ```markdown
-ERROR: No project management system configured
-Set up Linear or JIRA MCP server first.
+ERROR: No ticket database configured
+
+Add an `## ADLC tickets` section to CLAUDE.md or AGENTS.md naming the Notion data source
+(see `Skill(adlc:tracking-tickets)`), and make sure the Notion connector is connected.
 ```
 
 ### Missing Specification
@@ -178,7 +180,7 @@ ERROR: Run `/adlc:refine FEAT-45` first
 
 **Requires:**
 
-- Linear/JIRA MCP configured
+- Notion connected and an `## ADLC tickets` section in CLAUDE.md/AGENTS.md
 - Issue with Specification section
 - `technical-planning` and `reviewing-divergence` skills
 
