@@ -35,8 +35,8 @@ Agent(subagent_type="general-purpose", model="sonnet", run_in_background=true,
               Context budget: ~60k tokens. Stop after ~60 cycles, or sooner on any stop
               condition in the skill. Attempt cap 3 per check.
               Do not spawn subagents. Edit only on the PR branch. Never auto-merge.
-              Reach MCP tools (Linear/JIRA) through ToolSearch only if an escalation needs a
-              sub-issue. Report in the skill's report format and nothing else.")
+              Reach the Notion tools through ToolSearch only if an escalation needs a
+              sub-ticket (see adlc:tracking-tickets). Report in the skill's report format and nothing else.")
 ```
 
 Then report that the PR is *open and being driven to done*, and end your turn — do not wait on it.

@@ -58,7 +58,7 @@ if [[ -z "$issue_id" ]]; then
     # Continue without PM context
 else
     # Fetch parent issue
-    parent = get_issue(issue_id)
+    parent = get_ticket(issue_id)   # tracking-tickets
 
     echo "✓ Found parent issue: $issue_id - ${parent.title}"
 

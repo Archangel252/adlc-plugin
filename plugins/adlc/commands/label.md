@@ -1,121 +1,48 @@
 ---
 name: adlc-label
-description: Add or confirm a label on a Linear issue (bug/chore/feature)
+description: Set or confirm a ticket's Type in Notion (bug/chore/feature)
 ---
 
-# Label - Classify Linear Issues
+# Label - Classify Tickets
 
-Add or confirm a type label (bug/chore/feature) on a Linear issue.
+Set or confirm a ticket's Type (`bug` / `chore` / `feature`). The Type picks the execution pathway.
 
 ## Usage
 
 ```bash
-/adlc:label AIFE-123 bug       # Label as bug
-/adlc:label AIFE-123 chore     # Label as chore
-/adlc:label AIFE-123 feature   # Label as feature
-/adlc:label AIFE-123           # Interactive - show suggestion and confirm
+/adlc:label 42 bug       # Set Type to bug
+/adlc:label 42 chore     # Set Type to chore
+/adlc:label 42 feature   # Set Type to feature
+/adlc:label 42           # Interactive: suggest a Type and confirm
 ```
 
-## Overview
-
-Used to classify issues that are missing a type label. The conductor shows unlabeled issues with suggested labels - this command confirms or overrides the suggestion.
+The ticket can be its number, `#42`, or its Notion URL.
 
 ## Process
 
-### With Label Argument
+All ticket steps use `Skill(adlc:tracking-tickets)`.
 
-```python
-def label_issue(issue_id: str, label: str):
-    """Apply label to issue."""
-    if label not in ['bug', 'chore', 'feature']:
-        print(f"Invalid label: {label}")
-        print("Valid labels: bug, chore, feature")
-        return
-
-    # Get issue
-    issue = mcp__linear-server__get_issue(id=issue_id)
-
-    # Add label
-    mcp__linear-server__update_issue(
-        id=issue['id'],
-        labels=[label]
-    )
-
-    print(f"Labeled {issue_id} as {label}")
-
-    # Issue will be re-classified on next conductor poll
-```
-
-### Interactive (No Label Argument)
-
-```python
-def label_issue_interactive(issue_id: str):
-    """Interactive label selection with suggestion."""
-    issue = mcp__linear-server__get_issue(id=issue_id)
-
-    # Suggest label based on content
-    suggested = suggest_label(issue)
-
-    print(f"Issue: {issue['identifier']} - {issue['title']}")
-    print(f"Suggested label: {suggested}")
-    print()
-    print("Select label:")
-    print(f"  1. {suggested} (suggested)")
-    print("  2. bug")
-    print("  3. chore")
-    print("  4. feature")
-
-    # User selects option
-    # Apply selected label
-```
+1. **find ticket** / **get ticket**. Not found → say so and stop.
+2. **With a Type argument:** it must be `bug`, `chore` or `feature` (anything else: list the valid ones and
+   stop). **set type**, then confirm: "Ticket 42 (Name) is now a feature."
+3. **Without one:** suggest a Type from the title and body (broken behaviour → `bug`; new or changed behaviour →
+   `feature`; no user-facing change → `chore`; see `creating-tickets`). Ask with AskUserQuestion, the suggestion
+   first, then **set type** to the answer.
 
 ## Model Recommendation (cost)
 
-After the label is applied/confirmed, **surface a one-line model tip keyed to the label** (advisory only — continue without waiting):
+After the Type is set or confirmed, **surface a one-line model tip keyed to it** (advisory only; continue without
+waiting):
 
-- **chore** → 💡 routine work — Sonnet handles it well at ~1/5 the Opus cost; consider `/model sonnet` when you execute it.
-- **feature / bug** → 💡 likely needs stronger reasoning — Opus is a reasonable default; if you'd switched to Sonnet, consider `/model opus` for the hard parts.
+- **chore** → 💡 routine work: Sonnet handles it well at ~1/5 the Opus cost; consider `/model sonnet` when you
+  execute it.
+- **feature / bug** → 💡 likely needs stronger reasoning: Opus is a reasonable default; if you'd switched to
+  Sonnet, consider `/model opus` for the hard parts.
 
 See `skills/execution-orchestration/references/model-routing.md`.
 
-## Examples
+## What happens next
 
-```bash
-# Conductor shows:
-# 🏷️  UNLABELED (Need Classification)
-# └─ AIFE-210 "Improve search" [suggest: feature] → /adlc:label AIFE-210
-
-# Confirm suggestion:
-/adlc:label AIFE-210 feature
-# Output: Labeled AIFE-210 as feature
-
-# Override suggestion:
-/adlc:label AIFE-210 chore
-# Output: Labeled AIFE-210 as chore
-
-# Interactive:
-/adlc:label AIFE-210
-# Output:
-# Issue: AIFE-210 - Improve search functionality
-# Suggested label: feature
-#
-# Select label:
-#   1. feature (suggested)
-#   2. bug
-#   3. chore
-#   4. feature
-```
-
-## Integration
-
-After labeling, the issue will be re-classified on the next conductor poll:
-
-- **bug** (standalone) → Auto-kick `/adlc:bug-fix`
-- **chore** (standalone) → Auto-kick `/adlc:chore`
-- **feature** → Enter HITL workflow (needs_refine → needs_plan → etc.)
-
-## Remember
-
-- Valid labels: `bug`, `chore`, `feature`
-- Conductor suggests labels based on title/description heuristics
-- Re-classification happens on next poll
+- **bug** (standalone) → `/adlc:bug-fix 42`
+- **chore** (standalone) → `/adlc:chore 42`
+- **feature** → `/adlc:refine 42`, then plan, breakdown, execute

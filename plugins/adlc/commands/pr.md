@@ -21,7 +21,7 @@ drive it to done. Thin entry point — all the logic lives in the `creating-pull
 
 - **`gh`** installed + authenticated, with repo access.
 - Commits on the current branch not in the base; remote configured.
-- Optional: PM system (Linear/JIRA) MCP for issue context; a PR template in `.github/`.
+- Optional: the Notion ticket database for ticket context; a PR template in `.github/`.
 
 ## What it does
 

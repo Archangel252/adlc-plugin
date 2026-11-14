@@ -1,6 +1,6 @@
 ---
 name: refining-issues
-description: Refine rough issue descriptions into fully-formed specifications through Socratic questioning, focusing on WHAT to build not HOW, writing results directly to Linear/JIRA issues
+description: Refine rough issue descriptions into fully-formed specifications through Socratic questioning, focusing on WHAT to build not HOW, writing results directly to the Notion ticket
 when_to_use: when partner provides issue ID or feature description that needs requirements refinement before technical planning
 version: 2.0.0
 ---
@@ -24,11 +24,11 @@ Transform rough issue descriptions into fully-formed specifications through stru
 
 | Phase | Key Activities | Tool Usage | Output |
 |-------|---------------|------------|--------|
-| **1. Load Issue** | Retrieve issue details | Linear/JIRA MCP tools | Issue context loaded |
+| **1. Load Issue** | Retrieve issue details | tracking-tickets: get ticket | Issue context loaded |
 | **2. Understanding** | Ask questions about needs (one at a time) | AskUserQuestion for choices | Purpose, constraints, success criteria |
 | **3. Behavior Exploration** | Clarify expected behaviors and edge cases | AskUserQuestion for scenarios | Clear behavioral requirements |
 | **4. Specification Presentation** | Present requirements in sections | Open-ended questions | Complete specification validated |
-| **5. Update Issue** | Write specification to issue | Linear/JIRA MCP update | Issue ready for technical planning |
+| **5. Update Issue** | Write specification to issue | tracking-tickets: write section | Issue ready for technical planning |
 
 ## The Process
 
@@ -64,20 +64,19 @@ Issue Refinement Progress:
 
 **If issue ID provided:**
 
-- Linear: `mcp__linear-server__get_issue(id=issue_id)`
-- OR JIRA: `mcp__jira__get_issue(issue_key=issue_id)`
-- Extract: Title, description, labels, project/team context
+- **get ticket** (see `Skill(adlc:tracking-tickets)`; a number goes through **find ticket** first)
+- Extract: title, body, Type, status
 - Present to user: "I've loaded issue [ID]: [Title]. Current description: [summary]"
 
 **If free text provided:**
 
-- Clarify which project/team this belongs to
-- Create the parent issue (Linear: `create_issue(title=, team=, description=)`; JIRA equivalent).
+- **create ticket** in the repo's ticket database (tracking-tickets) with the title, the user's text as the
+  body, and status `refining`.
   For label classification and required metadata, defer to `adlc:creating-tickets` — at refine
   time a bare placeholder is fine; the label and full ticket structure are set during
   `/breakdown` via `adlc:creating-tickets`.
 - Capture the created issue ID for later updates
-- Present to user: "I've created issue [ID]: [Title] in [Team/Project]"
+- Present to user: "I've created ticket [ID]: [Title]" with its Notion link
 
 ### Phase 2: Understanding
 
@@ -225,11 +224,9 @@ After specification is validated, write it to the issue:
 
 **Update the issue:**
 
-- Linear: `mcp__linear-server__update_issue(id=issue_id, description=formatted_description, labels=['refined'])`
-- OR JIRA: `mcp__jira__update_issue(issue_key=issue_id, description=formatted_description, labels=['refined'])`
-- Preserve any existing description content (append, don't replace)
-- Add label: "refined" or "ready-for-planning"
-- Update state to "Todo" if it was "Backlog" or "Triage"
+- **write section** `## Specification` on the ticket (tracking-tickets). Keep everything else on the page.
+- If the ticket has an `Acceptance Criteria` property, copy the AC1, AC2... list into it too.
+- **set status → refining** if it was still in the database's first (inbox) status.
 
 **Confirm with user:**
 "Specification written to issue [ID]. This defines WHAT to build. Ready to create the technical plan for HOW to build it? (Run /adlc:plan next)"

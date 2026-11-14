@@ -11,7 +11,7 @@ Execute maintenance tasks like dependency upgrades, refactoring, and other chore
 
 ```bash
 /chore <description>              # Execute chore from description
-/chore <issue-id>                 # Execute chore from Linear issue
+/chore <ticket>                   # Execute chore from a Notion ticket (number or URL)
 ```
 
 ## Overview
@@ -46,8 +46,7 @@ See `skills/execution-orchestration/references/model-routing.md`.
 
 **Optional:**
 
-- Linear issue with chore details
-- Linear MCP server for issue integration
+- A Notion ticket with the chore details (see `Skill(adlc:tracking-tickets)`)
 
 ## Workflow
 
@@ -55,13 +54,13 @@ See `skills/execution-orchestration/references/model-routing.md`.
 
 **Parse input to determine source:**
 
-- If matches `[A-Z]+-\d+` pattern: fetch from Linear via `mcp__linear-server__get_issue`
+- If it's a number, `#<number>` or a Notion URL: **find ticket** / **get ticket** (tracking-tickets)
 - Otherwise: treat as chore description
 
 **Extract chore details:**
 
 - Title and description
-- Issue ID (if from Linear)
+- Ticket ID (if from a ticket)
 
 **Present context and confirm:**
 
@@ -80,9 +79,9 @@ I'm using the executing-tasks skill (chore pathway) to handle this maintenance t
 **Pass to skill:**
 
 - Chore title and description
-- Linear issue ID (if applicable)
+- Ticket ID (if applicable)
 
-**Skill handles:** Pre-flight checks, implementation, verification, fixes, lightweight code review, commit, Linear updates
+**Skill handles:** Pre-flight checks, implementation, verification, fixes, lightweight code review, commit, ticket updates
 
 ### 3. Report Results
 
@@ -99,7 +98,7 @@ I'm using the executing-tasks skill (chore pathway) to handle this maintenance t
 
 - **Dirty working directory:** Commit/stash changes or use git worktree
 - **Missing justfile:** Create justfile or continue with manual verification
-- **Linear issue not found:** Check issue ID, access, and MCP configuration
+- **Ticket not found:** Check the number, the `## ADLC tickets` data source, and that Notion is connected
 - **Test/build failures:** Review skill output and fix issues iteratively
 
 ## Examples
@@ -110,10 +109,10 @@ I'm using the executing-tasks skill (chore pathway) to handle this maintenance t
 /chore "Upgrade React from v17 to v18"
 ```
 
-**From Linear issue:**
+**From a ticket:**
 
 ```bash
-/chore MAINT-42
+/chore 42
 ```
 
 Both invoke the executing-tasks skill (chore pathway) which handles implementation, verification, fixes, lightweight code review, and commit.
@@ -122,7 +121,7 @@ Both invoke the executing-tasks skill (chore pathway) which handles implementati
 
 **Command orchestrates:** Context loading → Skill invocation → Result reporting
 
-**Skill provides:** Pre-flight checks, implementation, verification, fixes, lightweight code review, commits, Linear updates
+**Skill provides:** Pre-flight checks, implementation, verification, fixes, lightweight code review, commits, ticket updates
 
 **Follow-up:** Use `/pr` to create pull request
 

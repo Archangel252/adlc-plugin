@@ -28,7 +28,8 @@ For *how the skills fit together* in the pipeline — and how routing and execut
 |-------|---------|-----------|
 | [`execution-orchestration`](../skills/execution-orchestration/SKILL.md) | Orchestrate features/phases/standalone: worktrees, team/sequential task execution, review gates, phase PRs (stacked default), PM updates; **verifies subagent work** (reads the diff + re-runs integrated checks) before any completion claim | `/execute` on a feature, phase, or standalone issue |
 | [`executing-tasks`](../skills/executing-tasks/SKILL.md) | Unified Tier 3 task execution — one spine, three pathways by label (feature = TDD, bug = investigate + TDD, chore = verify-only); includes the built-in **Verification Gate** (fresh command output before any completion claim) | Dispatched by `execution-orchestration` per task; or directly for standalone tickets |
-| [`updating-pm-status`](../skills/updating-pm-status/SKILL.md) | Update Linear/JIRA with task status changes and lifecycle comments | On status transitions during execution (start, PR, CI, merged) |
+| [`tracking-tickets`](../skills/tracking-tickets/SKILL.md) | The Notion ticket contract: repo config, status mapping, and every ticket operation | Before any step that reads or writes a ticket |
+| [`updating-pm-status`](../skills/updating-pm-status/SKILL.md) | Update the Notion ticket with task status changes and lifecycle comments | On status transitions during execution (start, PR, CI, merged) |
 
 ## Quality & Code Review
 

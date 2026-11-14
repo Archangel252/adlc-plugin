@@ -40,7 +40,7 @@ Then automatically calls `/adlc:execute <parent-id>` to implement all feedback.
 
 **PM System:**
 
-- Linear or JIRA MCP configured
+- Notion ticket database (`## ADLC tickets`, see `Skill(adlc:tracking-tickets)`)
 
 **Git Worktrees:**
 

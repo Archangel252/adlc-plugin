@@ -1,6 +1,6 @@
 # ADLC Plugin - AI Development Guide
 
-**Version:** 1.3.0
+**Version:** 2.0.0
 **Last Updated:** 2026-06-04
 
 ## Purpose
@@ -275,7 +275,7 @@ Each phase is a vertical slice — independently demoable e2e functionality. Tas
 **Good:**
 
 ```
-# Write plan in Linear issue description under ## Technical Plan
+# Write the plan on the Notion ticket under ## Technical Plan (tracking-tickets: write section)
 ```
 
 ### ❌ Implementing Before Testing
@@ -482,29 +482,18 @@ If we started with Technical Plan, we might choose Redis without understanding t
 
 ## Integration Points
 
-### Linear/JIRA MCP Servers
+### Notion (ticket system)
 
-**Required for ADLC workflows:**
+**Required for:** `/refine`, `/plan`, `/breakdown`, `/execute`, `/address-feedback`, status updates.
 
-One of Linear or JIRA MCP server is **required** for most ADLC workflows to function:
+All ticket reads and writes go through **`skills/tracking-tickets/SKILL.md`**: the repo's `## ADLC tickets`
+config, the status mapping, and the operations (get / find / list sub-tickets / create / set status / set type /
+link dependency / write section / comment). Other skills and commands name an operation; they never call Notion
+tools directly. Keep it that way: it is the one seam to change for another PM system.
 
-- `/refine` - Create/update issues with Specification
-- `/plan` - Add Technical Plan to issues
-- `/breakdown` - Create sub-issues with dependencies
-- `/execute` - Read sub-issues, update status
-- `/address-feedback` - Create feedback sub-issues
+**Exception:** `/foundations:setup` doesn't need it.
 
-**Exception:** `/foundations:setup` does not require Linear/JIRA - it works standalone with any repository
-
-**MCP Tools Used:**
-
-- `get_issue` - Fetch issue details
-- `list_issues` - Fetch sub-issues (filter by parentId)
-- `create_issue` - Create new issues
-- `update_issue` - Update descriptions, status
-- `create_dependency` - Link blocking relationships
-
-**Note:** Users must install MCP servers separately. ADLC does not include them.
+**Note:** Users connect Notion themselves. ADLC does not include the connector.
 
 ### Git Worktrees
 
@@ -546,7 +535,7 @@ One of Linear or JIRA MCP server is **required** for most ADLC workflows to func
 
 **How ADLC applies this:**
 
-- Specifications in Linear (living, searchable)
+- Specifications in Notion tickets (living, searchable)
 - Clear Specification vs Technical Plan separation
 - Specs updated during refinement
 - Plans reference codebase files
@@ -638,6 +627,7 @@ See `docs/PARALLEL-ORCHESTRATION.md` for complete documentation.
 
 | Version | Date       | Changes                                      |
 |---------|------------|----------------------------------------------|
+| 2.0.0   | 2026-11-14 | Tickets move from Linear/JIRA to Notion; all ticket I/O goes through the new `tracking-tickets` skill |
 | 1.4.0   | 2026-08-13 | PR babysitting moved out of the calling session into a fresh subagent spawned on a canonical brief in the `babysitting-prs` skill; every PR command moved into a fail-closed script |
 | 1.3.0   | 2026-06-04 | Optional estimated Claude spend in PR bodies (opt-in `pr.include_spend`); branch-scoped, deduped, with feature-PR phase rollup |
 | 1.2.0   | 2026-06-03 | Model routing — delegated execution defaults to Sonnet, code-review gate on Opus; overridable |

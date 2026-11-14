@@ -20,7 +20,7 @@ Reference for categorizing GitHub PR review comments by severity.
 
 - MUST be addressed before merge
 - Always create separate task
-- Highest Linear priority
+- Priority P0 (if the ticket database has Priority)
 - No grouping with other items
 
 ### Important
@@ -39,7 +39,7 @@ Reference for categorizing GitHub PR review comments by severity.
 
 - Should be addressed before merge
 - Always create separate task
-- High Linear priority
+- Priority P1
 - May have dependencies on other Important items
 
 ### Minor
@@ -58,7 +58,7 @@ Reference for categorizing GitHub PR review comments by severity.
 
 - Can be addressed after merge (but shouldn't be ignored)
 - May be grouped if related
-- Medium/Low Linear priority
+- Priority P2/P3
 - Can be batched together
 
 ### Questions

@@ -31,8 +31,8 @@ seams:
     axis: company
     kind: substitution
     locations: ["skills/**", "commands/**"]
-    detect: ["mcp__linear-server__", "\\bLinear\\b", "\\bJIRA\\b"]
-    note: PM system MCP tool prefix + terminology + issue-key format (verify the target MCP's real prefix at port time)
+    detect: ["notion-fetch", "notion-update-page", "tracking-tickets", "\\bNotion\\b"]
+    note: PM system. All ticket I/O goes through skills/tracking-tickets (one file to port); other files name its operations
   - id: vcs-host
     axis: company
     kind: substitution
@@ -116,7 +116,7 @@ seams:
 
 ## Company axis — details
 
-- **pm-system** — ADLC reads/writes specs, plans, sub-issues, and status via a PM MCP server. Swap the MCP tool prefix (`mcp__linear-server__*`), terminology ("issue"/"ticket"), and issue-key pattern. **Research the target MCP's real prefix and tool names first** (the Atlassian/JIRA MCP is not `mcp__jira_server__`) — don't guess. ADLC documents both Linear and JIRA — prune to the one you use.
+- **pm-system** — ADLC reads/writes specs, plans, sub-tickets, and status in Notion. Every skill and command names a ticket operation (**get ticket**, **create ticket**, **set status**...) defined once in `skills/tracking-tickets/SKILL.md`, so porting to another PM system means rewriting that one skill's operations table and config, plus the setup docs. **Research the target MCP's real tool names first** — don't guess.
 - **vcs-host** — `gh pr …` / `gh api …` → your host's CLI. **Verify the target actually has an equivalent**: GitLab `glab` differs in subcommands; Bitbucket has no first-class `gh` equivalent (REST/`curl` or `acli`). Adjust PR-template detection. The PR loops are **scripts**, not prose, and they are GitHub-only on purpose (each exits `4` on a non-GitHub repo rather than guessing), so port the script plus its test suite together: `poll-pr-state.sh`, `watch-pr-comments.sh`, `pr-failed-logs.sh`, `reply-to-thread.sh`, `watch-pr-checks.sh`. The four rules each one implements — decide by what is still pending, `fail`/`cancel` are failures, absence is not success, an error is not an empty result — are host-independent and must survive the port.
 - **task-runner** — `just test|lint|format|build` → your runner; ADLC is abstracted here, so it's mostly a term swap. Anchor the swap to recipe verbs (not the bare word "just") and confirm flags exist (`just --list` has no `make` equivalent).
 - **ways-of-working** — your PR doctrine (what "done" means, approvals, merge method, commit convention, CI/security gates). Capture from the target repo's `.github` (branch protection, required checks), `CONTRIBUTING.md`, and a team interview; inject into `CLAUDE.md` and the PR/review skills so they fire in the loop.

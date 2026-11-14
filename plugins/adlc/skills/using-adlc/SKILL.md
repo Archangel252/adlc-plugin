@@ -42,7 +42,7 @@ Each command can run standalone or chain to the next.
 ## Conventions
 
 - **Always prefer `just` commands** — `just test`, `just lint`, `just format`, `just build`. Run `just --list` to discover recipes. ADLC stays stack-agnostic; the repo defines what each recipe does.
-- **The PM system (Linear/JIRA) is the source of truth** — specs, plans, and status live in tickets, not separate files.
+- **The Notion ticket is the source of truth** — specs, plans, and status live in tickets, not separate files.
 - **First time in a repo?** Run `/foundations:setup` to establish CLAUDE.md, a justfile, pre-commit hooks, and PM integration.
 
 ## Running in Cursor

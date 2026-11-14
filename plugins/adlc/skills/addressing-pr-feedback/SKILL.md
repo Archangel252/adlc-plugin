@@ -110,7 +110,7 @@ fi
 **Verify parent issue exists:**
 
 ```bash
-parent = get_issue(parent_issue_id)
+parent = get_ticket(parent_issue_id)   # tracking-tickets
 
 if not parent:
     ERROR: "Parent issue $parent_issue_id not found in PM system"
@@ -124,19 +124,19 @@ echo "✓ Found parent issue: $parent_issue_id - ${parent.title}"
 **REQUIRED SUB-SKILL:** Use `adlc:creating-tickets` for the classification (each sub-issue still
 needs exactly ONE `feature`/`chore`/`bug` label so execution routes correctly) and create-issue
 mechanics. This step adds only the PR-feedback-specific metadata on top: parent link, severity
-priority, and the `pr-feedback` + category labels.
+priority, and a `[PR Feedback] <category>` title prefix (Notion tickets have one Type, no free labels).
 
 **Add new sub-issues to existing parent:**
 
 ```python
 for item in critical + important + minor:
-    sub_issue = create_issue({
-        'title': f"[PR Feedback] {category}: {description}",
-        'description': format_description(item),  # use the creating-tickets template
-        'parent': parent_issue_id,  # Add to EXISTING parent
-        'priority': map_severity(item.category),
-        'labels': classify(item) + ['pr-feedback', item.category]  # feature/chore/bug + PR metadata
-    })
+    sub_issue = create_ticket(                       # tracking-tickets: create ticket
+        title=f"[PR Feedback] {item.category}: {description}",
+        body=format_description(item),               # use the creating-tickets template
+        parent=parent_issue_id,                      # add to the EXISTING parent
+        type=classify(item),                         # feature / chore / bug
+        priority=map_severity(item.category),        # only if the database has Priority
+    )
 ```
 
 **Update parent issue with feedback summary:**
@@ -159,10 +159,8 @@ New sub-issues created:
 {list_sub_issue_ids}
 """
 
-update_issue({
-    'id': parent_issue_id,
-    'description': parent.description + feedback_section
-})
+# tracking-tickets: write section (appends; never rewrites the parent's other sections)
+write_section(parent_issue_id, f"PR Feedback ({timestamp})", feedback_section)
 ```
 
 ### Step 7: Return to Command

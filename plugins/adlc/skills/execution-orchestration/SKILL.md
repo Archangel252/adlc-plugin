@@ -75,9 +75,12 @@ from subagent summaries; merging a phase before running the integrated checks yo
 
 ## Step 0: Entry & Detection
 
+Ticket operations (**get ticket**, **list sub-tickets**, **set status**, **comment**) are defined in
+`Skill(adlc:tracking-tickets)`; load it first.
+
 ```python
-issue = mcp__linear-server__get_issue(id=issue_id)
-sub_issues = mcp__linear-server__list_issues(parentId=issue.id)
+issue = get_ticket(issue_id)            # tracking-tickets: get ticket
+sub_issues = list_sub_tickets(issue)    # tracking-tickets: list sub-tickets (ordered by Blocked by)
 
 if len(sub_issues) > 0:
     # Feature — orchestrate phases (this skill's main flow)
@@ -123,12 +126,12 @@ if "## Technical Plan" not in parent.description:
     ERROR("Missing ## Technical Plan — run /adlc:plan first")
 
 # Phase checks
-for phase in [p for p in sub_issues if p.state not in ("Done", "Completed")]:
-    phase_detail = mcp__linear-server__get_issue(id=phase.id)
+for phase in [p for p in sub_issues if p.status != "done"]:
+    phase_detail = get_ticket(phase)
 
-    # Must have label
-    if not any(l.name in ("feature", "bug", "chore") for l in phase_detail.labels):
-        ERROR(f"Phase {phase.identifier} has no feature/bug/chore label")
+    # Must have a type
+    if phase_detail.type not in ("feature", "bug", "chore"):
+        ERROR(f"Phase {phase.identifier} has no feature/bug/chore Type")
 
     # Must have key sections
     for section in ("## Scope", "## Tasks", "## Acceptance Criteria"):
@@ -187,9 +190,7 @@ cd ~/worktrees/<repo>/{phase-branch}/
 
 ### 5b. PM Update
 
-```python
-mcp__linear-server__save_issue(id=phase.id, state="In Progress")
-```
+**set status → in_progress** on the phase ticket (see `updating-pm-status`, "Task started").
 
 ### 5c. Resolve Strategy
 
@@ -381,12 +382,7 @@ for the exact command.
 
 ### 5g. PM Update
 
-```python
-mcp__linear-server__save_issue(id=phase.id, state="In Review")
-mcp__linear-server__create_comment(
-    issueId=phase.id, body=f"Phase PR created: {pr.url}"
-)
-```
+**set status → in_review** on the phase ticket, **set field** PR URL, and **comment** "Phase PR created: {pr.url}".
 
 ### 5h. Squash-Merge Phase PR
 
@@ -399,19 +395,18 @@ gh pr merge {pr_number} --squash --delete-branch
 The **Tests** and **Verification** lines below must report the integrated run from Step 5d, not
 the sum of per-task reports.
 
-```python
-mcp__linear-server__save_issue(id=phase.id, state="Done")
-mcp__linear-server__create_comment(
-    issueId=parent.id,
-    body=f"""## Phase Complete: {phase.identifier}
+**set status → done** on the phase ticket, then **comment** on the parent (Notion comments render inline
+formatting only, so one fact per line):
+
+```
+**Phase complete:** {phase title} (ticket {phase id})
 **Implemented:** {summary}
 **Phase PR:** #{pr_number} (squash-merged)
 **Tests:** {test_count} written, all passing
 **Verification:** just test + lint + build clean (integrated run, Step 5d)
 **Acceptance:** {covered}/{total} criteria covered by passing acceptance tests
 **Patterns:** {new_patterns}
-**Files Changed:** {file_list}"""
-)
+**Files changed:** {file_list}
 ```
 
 ### 5j. Cleanup Phase Worktree

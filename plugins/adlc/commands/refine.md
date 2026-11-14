@@ -10,7 +10,7 @@ Transform rough ideas into validated specifications (WHAT to build), ready for t
 ## Usage
 
 ```bash
-/refine <issue-id>          # Refine existing Linear/JIRA issue
+/refine <ticket>            # Refine an existing Notion ticket (number or URL)
 /refine <free text>         # Create new issue and refine it
 ```
 
@@ -18,7 +18,7 @@ Transform rough ideas into validated specifications (WHAT to build), ready for t
 
 This command uses the `refining-issues` skill to:
 
-1. Load or create issue in Linear/JIRA
+1. Load or create the ticket in Notion
 2. Ask questions about user needs (WHAT, not HOW)
 3. Explore expected behaviors and edge cases
 4. Present specification for validation
@@ -33,17 +33,11 @@ This command uses the `refining-issues` skill to:
 
 **Existing issue:**
 
-```bash
-issue = mcp__linear-server__get_issue(id)
-```
+**find ticket** / **get ticket** (`Skill(adlc:tracking-tickets)`).
 
 **New issue from text:**
 
-```bash
-# Determine team (from CLAUDE.md or ask user)
-# Create issue with description
-issue = mcp__linear-server__create_issue(title, description, team)
-```
+**create ticket** in the repo's ticket database (from `## ADLC tickets`), status `refining`.
 
 ### Step 2: Run Refining-Issues Skill
 
@@ -73,12 +67,10 @@ Ready to create technical plan? Run `/adlc:plan <ISSUE-ID>`
 ### No PM System
 
 ```markdown
-ERROR: No project management system configured
+ERROR: No ticket database configured
 
-Install Linear or JIRA MCP server:
-- Linear: https://github.com/modelcontextprotocol/servers/tree/main/src/linear
-- Configure API key in Claude Code settings
-- Restart Claude Code
+Add an `## ADLC tickets` section to CLAUDE.md or AGENTS.md naming the Notion data source
+(see `Skill(adlc:tracking-tickets)`), and make sure the Notion connector is connected.
 ```
 
 ### Issue Not Found
@@ -86,9 +78,7 @@ Install Linear or JIRA MCP server:
 ```markdown
 ERROR: Issue <ISSUE-ID> not found
 
-Check issue ID format:
-- Linear: TEAM-123
-- JIRA: PROJECT-456
+Use the ticket's number (its `Ticket ID`, e.g. 42) or its Notion URL.
 
 Or create new: `/refine "your feature description"`
 ```
@@ -97,7 +87,7 @@ Or create new: `/refine "your feature description"`
 
 **Requires:**
 
-- Linear/JIRA MCP configured
+- Notion connected and an `## ADLC tickets` section in CLAUDE.md/AGENTS.md
 - `refining-issues` skill
 
 **Chains to:**
