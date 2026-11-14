@@ -3,10 +3,17 @@
   "version": "1.3.0",
   "description": "Agentic Development Lifecycle: refine, plan, break down, execute, and ship PRs through a spec-driven pipeline.",
   "author": {
-    "name": "HG Capital",
-    "email": "nick.barrington@hgcapital.com"
+    "name": "Archangel252",
+    "url": "https://github.com/Archangel252"
   },
-  "repository": "https://github.com/aidendixon13/adlc-plugin",
-  "keywords": ["workflow", "planning", "tdd", "code-review", "pull-requests", "subagents"],
+  "repository": "https://github.com/Archangel252/adlc-plugin",
+  "keywords": [
+    "workflow",
+    "planning",
+    "tdd",
+    "code-review",
+    "pull-requests",
+    "subagents"
+  ],
   "hooks": "hooks/cursor-hooks.json"
 }

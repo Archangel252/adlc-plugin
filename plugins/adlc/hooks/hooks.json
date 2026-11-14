@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/session-init.sh",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-init.sh\"",
             "timeout": 30
           }
         ]
@@ -18,12 +18,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/verify-guard.sh subagentstop",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/verify-guard.sh\" subagentstop",
             "timeout": 120
           },
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/stop-guard.sh 'Before this implementation subagent finishes, confirm:\n1. Have the acceptance criteria for this task been met?\n2. If architectural or design changes were made, have relevant docs (CLAUDE.md, CLAUDE-architecture.md) been updated?\n3. Has a code review been performed (via code-reviewer subagent or manual review)?\nIf any are missing, address them before completing.'"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-guard.sh\" 'Before this implementation subagent finishes, confirm:\n1. Have the acceptance criteria for this task been met?\n2. If architectural or design changes were made, have relevant docs (CLAUDE.md, CLAUDE-architecture.md) been updated?\n3. Has a code review been performed (via code-reviewer subagent or manual review)?\nIf any are missing, address them before completing.'"
           }
         ]
       },
@@ -32,7 +32,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/stop-guard.sh 'Before this code review subagent finishes, confirm:\n1. Were any critical or major issues found?\n2. If so, have they been addressed or flagged for the parent agent to resolve?\nDo not allow the review to complete with unacknowledged critical issues.'"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-guard.sh\" 'Before this code review subagent finishes, confirm:\n1. Were any critical or major issues found?\n2. If so, have they been addressed or flagged for the parent agent to resolve?\nDo not allow the review to complete with unacknowledged critical issues.'"
           }
         ]
       }
@@ -42,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/teammate-idle-guard.sh"
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/teammate-idle-guard.sh\""
           }
         ]
       }
@@ -52,7 +52,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/verify-guard.sh taskcompleted",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/verify-guard.sh\" taskcompleted",
             "timeout": 120
           }
         ]
