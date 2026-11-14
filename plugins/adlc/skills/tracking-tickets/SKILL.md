@@ -25,7 +25,7 @@ Every repo that uses ADLC declares its ticket database in `CLAUDE.md` or `AGENTS
 ## ADLC tickets
 
 - Data source: collection://98cc7015-186c-44e8-839f-afc392098548   (Rose Tickets)
-- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged to dev,
+- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged,
   refining=Refining
 ```
 
@@ -53,7 +53,7 @@ ADLC statuses map to the database's own status values:
 | `in_progress` | being implemented, or review asked for changes | `Implementing` |
 | `in_review` | PR open, waiting on CI / review | `PR Open` |
 | `blocked` | needs a human (CI failing, stuck, escalated) | `Needs Human` |
-| `done` | merged | `Merged to dev` |
+| `done` | merged | `Merged` |
 
 **No `## ADLC tickets` section?** Stop and tell the user what to add (the block above, with their data source).
 Don't guess a database. To find one, `notion-search` for it with the user and confirm.

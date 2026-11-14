@@ -123,7 +123,7 @@ Add an `## ADLC tickets` section to the repo's CLAUDE.md or AGENTS.md:
 ## ADLC tickets
 
 - Data source: collection://<your data source id>   (<database name>)
-- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged to dev,
+- Statuses: todo=Ready, in_progress=Implementing, in_review=PR Open, blocked=Needs Human, done=Merged,
   refining=Refining
 ```
 
