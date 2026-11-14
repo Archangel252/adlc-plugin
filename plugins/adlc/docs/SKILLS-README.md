@@ -61,6 +61,7 @@ For *how the skills fit together* in the pipeline — and how routing and execut
 | Skill | Purpose | When used |
 |-------|---------|-----------|
 | [`creating-pull-requests`](../skills/creating-pull-requests/SKILL.md) | Create PRs with human-readable descriptions, diagrams, and template detection | End of an execution workflow (`/pr`) |
+| [`capturing-ui-evidence`](../skills/capturing-ui-evidence/SKILL.md) | Headless Playwright screenshots/video of the app, attached to the PR | A PR's diff touches the repo's `## ADLC preview` UI paths |
 | [`babysitting-prs`](../skills/babysitting-prs/SKILL.md) | Drive an open PR to done in the background: CI green, safe review comments auto-incorporated, threads resolved (never auto-merges). Carries the canonical brief for spawning it in a fresh subagent, plus the `gh` watch/poll scripts | Automatically after a PR is raised; or directly to monitor a PR until mergeable |
 | [`addressing-pr-feedback`](../skills/addressing-pr-feedback/SKILL.md) | Process PR review comments into trackable sub-issues, ready for execution | `/address-feedback` on a reviewed PR |
 
